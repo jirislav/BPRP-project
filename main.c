@@ -5,9 +5,17 @@
  * Created on 5. října 2016, 10:15
  */
 
-//#include <stdio.h>
-//#include <stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <wiringPi.h>
+
+PI_THREAD(myThread1) {
+    softwarePWM(2, 1000000, 50, 0, 0);
+}
+
+PI_THREAD(myThread2) {
+    softwarePWM(3, 500000, 75, 0, 0);
+}
 
 /*
  * 
@@ -15,17 +23,23 @@
 int main(int argc, char** argv) {
     wiringPiSetup();
 
-    return softwarePWM(0, 1000000, 50, 0, 0);
-    /*
-    pinMode(0, OUTPUT);
+    int x = piThreadCreate(myThread1);
+
+    if (x != 0) {
+        printf("it didn't start");
+    }
+    
+    x = piThreadCreate(myThread2);
+
+    if (x != 0) {
+        printf("it didn't start");
+    }
+
     while(1) {
-        digitalWrite(0, HIGH);
-        delay(500);
-        digitalWrite(0, LOW);
         delay(500);
     }
+    
     return 0;
-     */
 }
 
 /**
@@ -56,7 +70,7 @@ int softwarePWM(int pin, int period, unsigned int duty, unsigned int runtime, in
     int duration_low = period - duration_high;
 
     while (1) {
-        
+
         digitalWrite(pin, HIGH);
         delayMicroseconds(duration_high);
 
