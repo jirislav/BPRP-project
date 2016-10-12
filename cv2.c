@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <wiringPi.h>
 
+
 PI_THREAD(myThread1) {
     softwarePWM(2, 1000000, 50, 0, 10);
 }
@@ -20,7 +21,7 @@ PI_THREAD(myThread2) {
 /*
  * 
  */
-int main(int argc, char** argv) {
+int old_main(int argc, char** argv) {
     wiringPiSetup();
 
     int x = piThreadCreate(myThread1);
