@@ -33,12 +33,12 @@ int main() {
             //float voltage = RESOLUTION * ((value & AD799X_RESULT_VALUE) >> 2);
             
             /*
-             * calibration info
+             * battery calibration info
              * 11,93 V = 0x0ae8
              */
             float voltage = (value & AD799X_RESULT_VALUE) * 11.93f / 0x0ae8;
             
-            printf("Voltage is %.3f V\n", voltage);
+            //printf("Voltage is %.3f V\n", voltage);
             
             usleep(5e5);
         }
