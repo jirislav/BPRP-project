@@ -18,7 +18,7 @@
 #define RESOLUTION (3.3f / 1024)
 
 
-int main() {
+int main_cv6() {
 	// inicializace i2c
 	int bus = i2c_init(1);
 

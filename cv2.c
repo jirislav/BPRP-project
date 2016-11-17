@@ -21,7 +21,7 @@ PI_THREAD(myThread2) {
 /*
  * 
  */
-int old_main(int argc, char** argv) {
+int main_cv2(int argc, char** argv) {
     wiringPiSetup();
 
     int x = piThreadCreate(myThread1);

@@ -58,7 +58,7 @@ int setLow() {
 /*
  * 
  */
-int main(int argc, char** argv) {
+int main_cv3(int argc, char** argv) {
 
     fd = open(I2C_DEVICE, O_RDWR);
 
