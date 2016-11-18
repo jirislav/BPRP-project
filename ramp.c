@@ -25,6 +25,15 @@
 
 typedef unsigned char BYTE;
 // defined constants in header file!!
+void spust_rampu()
+{
+    piThreadCreate(ramp_thread);
+}
+
+PI_THREAD (ramp_thread)
+{
+    ramp(RAMP_DELAY, 1, 1)
+}
 
 void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
 {
@@ -36,7 +45,7 @@ void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
     // startup
     int ioctl_result = ioctl(fd, I2C_SLAVE, RAMP_I2C_ADDRESS);
     
-    
+    uint16_t * speed[2];
     
     // endless thread
     while(1) 
@@ -46,7 +55,7 @@ void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
     piUnlock(mutexlock)
             
     // i2c read current speed
-    uint16_t * speed[2];
+    
     read_motors_speed(speed);
     // i2c modify current speed
     if (speed[0] != mutex_L) // required and set speed are not equal
@@ -68,6 +77,7 @@ void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
     //else if speed is zero - turn power off?
     
     // sleep 
+    speed = {0};
     usleep(RAMP_DELAY)
     }
     

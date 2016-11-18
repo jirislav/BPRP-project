@@ -24,13 +24,15 @@ extern "C" {
 // Run "i2cdetect -y 1"
 #define RAMP_I2C_ADDRESS 0x70
 
-// Delay in ms
+// Delay of ramp thread in ms
 #define RAMP_DELAY 10
+    
+    
 
-int set_motors_speed(int fd, int left, int right)
+int set_motors_speed(int fd, uint16_t left, uint16_t right)
 void read_motors_speed(uint16_t *speed)
-void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
 
+void spust_rampu() // spusti thread
 #ifdef __cplusplus
 }
 #endif
