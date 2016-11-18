@@ -27,7 +27,9 @@ extern "C" {
 // Delay in ms
 #define RAMP_DELAY 10
 
-
+int set_motors_speed(int fd, int left, int right)
+void read_motors_speed(uint16_t *speed)
+void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
 
 #ifdef __cplusplus
 }

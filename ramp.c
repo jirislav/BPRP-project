@@ -8,7 +8,12 @@
  * sleep - time to sleep between steps - [us]
  * stepsize - how large increment should be
  * mutex which number to lock
- */
+ * DO ME: casting to unit16 instead of ints for byte ops
+ * 
+ * 
+ *  */
+
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -23,7 +28,7 @@ typedef unsigned char BYTE;
 
 void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
 {
-    // thread init
+    // fction init
     int fd;
     
     // open device comm
@@ -41,9 +46,19 @@ void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
     piUnlock(mutexlock)
             
     // i2c read current speed
-    int[]* spd[2];
-    read_motors_speed(spd);
+    uint16_t * speed[2];
+    read_motors_speed(speed);
     // i2c modify current speed
+    if (speed[0] != mutex_L) // required and set speed are not equal
+    {    
+        // do ramp, else do nothing
+    }
+    if (speed[1] != mutex_R) // required and set speed are not equal
+    {    
+        // do ramp, else do nothing
+    }
+     
+    
     // if speed is different
     if (set_motors_speed(l,r)<0)
     {
@@ -61,10 +76,22 @@ void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
 
 
 
+void read_motors_speed(uint16_t *speed)
+{
+    
+    BYTE spd[10]={0}; // create storage for read bytes
+    
+    if ((int numb=read(fd,spd,5))!=5)
+    {    // failed to read the correct number of bytes
+    }   
+    // if load order is B 0 LL LH RL RH then build the numbers
+      *speed[0] = spd[1] | spd[2] << 8; // speed left
+      *speed[1] = spd[3] | spd[4] << 8; // speed right
+      printf("read_motors_speed reading l_spd: %d, r_spd: %d\r\n", *speed[0],*speed[1]); 
+      
+}
 
-
-
-int set_motors_speed(int left, int right) {
+int set_motors_speed(int fd, uint16_t left, uint16_t right) {
     
     BYTE left_low = left & 0xff;
     BYTE left_high = left >> 8;
