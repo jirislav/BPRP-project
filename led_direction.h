@@ -18,6 +18,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+    
+#include <stdbool.h>
 
 short led_dir(bool* led_array);
 

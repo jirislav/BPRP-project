@@ -7,19 +7,26 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdint.h>
+
 #include "logging.h"
-#include "communication.h"
+//#include "communication.h"
+#include "led_direction.h"
+#include "ramp.h"
+
 
 /*
  * 
  */
 int main(int argc, char** argv) {
     int r=1;
+    
     log_msg(INFO,"APP IS STARTING %d",r);
     
-    vytvor_prijem();
-    socket_vysilani();
-   
+    /*
+        vytvor_prijem();
+        socket_vysilani();
+    */
     return (EXIT_SUCCESS);
 }
 

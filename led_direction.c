@@ -1,5 +1,7 @@
-#include "led_direction.h"
 #include "logging.h"
+
+//#include "led_direction.h"
+
 /* 
  * File:   led_direction.c
  * Author: Daired
@@ -23,15 +25,16 @@
  */
 
 short led_dir(short* led_array){
-    if(sizeof(led_array)*sizeof(led_array*) != 8)
+    /* TODO: fix this .. 
+     * if(sizeof(led_array)*sizeof(led_array*) != 8)
     {
         log_msg(ERROR,"led_array received wrong number of elements! return value 4");
         return 4;
-    }
+    }*/
     for(int i=0;i<4;++i)
     {
-        if((led_array !=0) || (led_array !=1)) 
-        log_msg(ERROR,"led_array[%d] = %s (received wrong value within interval <-1;1>_! return value 4",i,led array[i]);
+        if((led_array[i] != 0) || (led_array[i] != 1)) 
+        log_msg(ERROR,"led_array[%d] = %s (received wrong value within interval <-1;1>_! return value 4",i,led_array[i]);
         return 4;
     }
     
