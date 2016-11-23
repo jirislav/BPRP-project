@@ -18,8 +18,12 @@
 extern "C" {
 #endif
 
-
+void spust_dataRead();
 int whatColor();
+
+char* detect_color(int color);
+
+extern int pole_barva[4];
 
 #ifdef __cplusplus
 }
