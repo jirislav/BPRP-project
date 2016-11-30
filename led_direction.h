@@ -21,6 +21,8 @@ extern "C" {
 
 short led_dir();
 
+#define LED_DIRECTION_LOCK_NO 3
+
 
 #ifdef __cplusplus
 }

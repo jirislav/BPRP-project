@@ -23,6 +23,8 @@
 #include <stdint.h>
 #include <error.h>
 
+#include <time.h>
+
 #include "logging.h"
 #include "ramp.h"
 
@@ -47,15 +49,14 @@ void start_ramping()
     // startup
     int ioctl_result = ioctl(fd, I2C_SLAVE, RAMP_I2C_ADDRESS);
     
-    uint16_t * speed[2];
+    uint16_t speed[2];
     
     // endless thread
-    while(1) 
+    while(1)
     {
         piLock(RAMP_LOCK_NO);
         
         int mutex_L = 0;
-        
         int mutex_R = 0;
         
         // global variable to read - desired speed
@@ -66,16 +67,16 @@ void start_ramping()
         read_motors_speed(fd, speed);
         // i2c modify current speed
         
-        int l = *speed[0], r = *speed[1];
+        int l = speed[0], r = speed[1];
         
-        if (*speed[0] != mutex_L) // required and set speed are not equal
+        if (speed[0] != mutex_L) // required and set speed are not equal
         {    
             if (mutex_L > l)
                 l += RAMP_STEP_SIZE;
             else if (mutex_L < l)
                 l -= RAMP_STEP_SIZE;
         }
-        if (*speed[1] != mutex_R) // required and set speed are not equal
+        if (speed[1] != mutex_R) // required and set speed are not equal
         {    
             if (mutex_R > r)
                 r += RAMP_STEP_SIZE;
@@ -96,14 +97,14 @@ void start_ramping()
         speed[0] = 0;
         speed[1] = 0;
         
-        usleep(RAMP_LOOP_USLEEP);
+        nanosleep(RAMP_LOOP_NANO_SLEEP);
     }
     
     close(fd);
 }
 
 
-void read_motors_speed(int fd, uint16_t **speed)
+void read_motors_speed(int fd, uint16_t *speed)
 {
     
     BYTE spd[10] = {0}; // create storage for read bytes
@@ -113,9 +114,9 @@ void read_motors_speed(int fd, uint16_t **speed)
     }   
     // FIXME test this!
     // if load order is B 0 LL LH RL RH then build the numbers
-      *speed[0] = spd[1] | spd[2] << 8; // speed left
-      *speed[1] = spd[3] | spd[4] << 8; // speed right
-      log_msg(DEBUG, "read_motors_speed reading l_spd: %d, r_spd: %d\r\n", speed[0], speed[1]); 
+      speed[0] = spd[1] | spd[2] << 8; // speed left
+      speed[1] = spd[3] | spd[4] << 8; // speed right
+      log_msg(DEBUG, "r_mot_sp l:%d r:%d", speed[0], speed[1]); 
       
 }
 
@@ -129,7 +130,7 @@ int set_motors_speed(int fd, uint16_t left, uint16_t right) {
     
     BYTE data[] = { 0, left_low, left_high, right_low, right_high };
     
-    log_msg(DEBUG, "set_motors_speed writing ll: %d, lh: %d, rl: %d, rh: %d\r\n", left_low, left_high, right_low, right_high); 
+    log_msg(DEBUG, "w_mot_sp ll:%d lh:%d rl:%d rh:%d", left_low, left_high, right_low, right_high); 
     return write(fd, data, 5);
 }
 

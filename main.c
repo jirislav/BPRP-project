@@ -11,9 +11,16 @@
  * 
  */
 
+#define MAIN_LOOP_NANO_SLEEP 1e9
+
+#define DATA_READ_LOOP_NANO_SLEEP 1e8
+#define DRIVER_LOOP_NANO_SLEEP 1e8
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
+#include <time.h>
+
+#include <wiringPi.h>
 
 #include "logging.h"
 //#include "communication.h"
@@ -21,23 +28,19 @@
 #include "ramp.h"
 #include "dataRead.h"
 
-#include <wiringPi.h>
-
 #include "ad799x.h"
 #include "i2c.h"
 #include "km2.h"
-
-#define MAIN_LOOP_USLEEP 1e5
-#define DRIVER_LOOP_USLEEP 1e4
 
 
 void start_driving() {
     
     while(1) {
         
-        short kam_jet = led_dir();
+        short direction = led_dir();
     
-        usleep(DRIVER_LOOP_USLEEP);
+        // Write to the ramp
+        nanosleep(DRIVER_LOOP_NANO_SLEEP);
     }
 }
 
@@ -56,20 +59,16 @@ void run_driver() {
  */
 int main(int argc, char** argv) {
     
-    log_msg(INFO,"APP IS STARTING");
+    log_msg(INFO, "APP IS STARTING");
     
     run_dataRead();
+    //run_ramp();
     run_driver();
-    run_ramp();
     
     while(1)
     {
-        usleep(MAIN_LOOP_USLEEP);
+        nanosleep(MAIN_LOOP_NANO_SLEEP);
     }
-    
-    /*
-        vytvor_prijem();
-        socket_vysilani();
-    */
+
     return (EXIT_SUCCESS);
 }

@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <wiringPi.h>
+#include <time.h>
 
 #include "ad799x.h"
 #include "i2c.h"
@@ -45,19 +46,25 @@ int detectWhiteBlack(int bus, int16_t* value, int16_t* value1, int16_t* value2, 
     // Write the black & white detection
     piLock(DATA_READ_LOCK_NO);
     for (int i = 0; i < 4; ++i) {
-        if (pole[i] > 2500 && pole[i] < 5000)
+        if (pole[i] > 1000)
             sensor_color[i] = 1;
-        else if (pole[i] > 0 && pole[i] < 1500)
+        else if (pole[i] > 0 && pole[i] < 800)
             sensor_color[i] = 0;
         else
             sensor_color[i] = 2;
     }
     piUnlock(DATA_READ_LOCK_NO);
-
-    log_msg(DEBUG, "0: 0x%04x => %d => %d => \t%s\n", (*value & AD799X_RESULT_CHAN) >> 12, pole[0], sensor_color[0], detect_color(sensor_color[0]));
-    log_msg(DEBUG, "1: 0x%04x => %d => %d => \t%s\n", (*value1 & AD799X_RESULT_CHAN) >> 12, pole[1], sensor_color[1], detect_color(sensor_color[1]));
-    log_msg(DEBUG, "2: 0x%04x => %d => %d => \t%s\n", (*value2 & AD799X_RESULT_CHAN) >> 12, pole[2], sensor_color[2], detect_color(sensor_color[2]));
-    log_msg(DEBUG, "3: 0x%04x => %d => %d => \t%s\n", (*value3 & AD799X_RESULT_CHAN) >> 12, pole[3], sensor_color[3], detect_color(sensor_color[3]));
+    /*
+    log_msg(DEBUG, "0: 0x%04x => %d => %d => \t%s", (*value & AD799X_RESULT_CHAN) >> 12, pole[0], sensor_color[0], detect_color(sensor_color[0]));
+    log_msg(DEBUG, "1: 0x%04x => %d => %d => \t%s", (*value1 & AD799X_RESULT_CHAN) >> 12, pole[1], sensor_color[1], detect_color(sensor_color[1]));
+    log_msg(DEBUG, "2: 0x%04x => %d => %d => \t%s", (*value2 & AD799X_RESULT_CHAN) >> 12, pole[2], sensor_color[2], detect_color(sensor_color[2]));
+    log_msg(DEBUG, "3: 0x%04x => %d => %d => \t%s", (*value3 & AD799X_RESULT_CHAN) >> 12, pole[3], sensor_color[3], detect_color(sensor_color[3]));
+    */
+    
+    log_msg(DEBUG, "col_sen_0:%d=%s", pole[0], detect_color(sensor_color[0]));
+    log_msg(DEBUG, "col_sen_1:%d=%s", pole[1], detect_color(sensor_color[1]));
+    log_msg(DEBUG, "col_sen_2:%d=%s", pole[2], detect_color(sensor_color[2]));
+    log_msg(DEBUG, "col_sen_3:%d=%s", pole[3], detect_color(sensor_color[3]));
 
 }
 
@@ -88,7 +95,7 @@ PI_THREAD(ReadData) {
     while (1) {
 
         detectWhiteBlack(bus, &value, &value1, &value2, &value3);
-        usleep(DATA_READ_LOOP_USLEEP);
+        nanosleep(DATA_READ_LOOP_NANO_SLEEP);
     }
 
     // uzavreni i2c
