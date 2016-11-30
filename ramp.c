@@ -22,6 +22,8 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <error.h>
+
+#include "logging.h"
 #include "ramp.h"
 
 #include <wiringPi.h>
@@ -35,20 +37,7 @@ typedef unsigned char BYTE;
 // defined constants in header file!!
 
 
-
-PI_THREAD (ramp_thread)
-{
-    ramp(RAMP_DELAY, 1, 1);
-}
-
-void spust_rampu()
-{
-    auto x = piThreadCreate(ramp_thread);
-    if (x != 0)
-        printf ("ramp didn't start\n");
-}
-
-void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
+void start_ramping()
 {
     // fction init
     int fd;
@@ -63,18 +52,18 @@ void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
     // endless thread
     while(1) 
     {
-        piLock(mutexlock);
+        piLock(RAMP_LOCK_NO);
         
         int mutex_L = 0;
         
         int mutex_R = 0;
         
         // global variable to read - desired speed
-        piUnlock(mutexlock);
+        piUnlock(RAMP_LOCK_NO);
             
         // i2c read current speed
     
-        read_motors_speed( fd,&speed);
+        read_motors_speed(fd, speed);
         // i2c modify current speed
         
         int l = *speed[0], r = *speed[1];
@@ -82,16 +71,16 @@ void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
         if (*speed[0] != mutex_L) // required and set speed are not equal
         {    
             if (mutex_L > l)
-                l += stepsize;
+                l += RAMP_STEP_SIZE;
             else if (mutex_L < l)
-                l -= stepsize;
+                l -= RAMP_STEP_SIZE;
         }
         if (*speed[1] != mutex_R) // required and set speed are not equal
         {    
             if (mutex_R > r)
-                r += stepsize;
+                r += RAMP_STEP_SIZE;
             else if (mutex_R < r)
-                r -= stepsize;
+                r -= RAMP_STEP_SIZE;
         }
         
         
@@ -107,7 +96,7 @@ void ramp(unsigned int sleep, unsigned int stepsize, unsigned int mutexlock)
         speed[0] = 0;
         speed[1] = 0;
         
-        usleep(RAMP_DELAY);
+        usleep(RAMP_LOOP_USLEEP);
     }
     
     close(fd);
@@ -122,10 +111,11 @@ void read_motors_speed(int fd, uint16_t **speed)
     if (numb != 5)
     {    // failed to read the correct number of bytes
     }   
+    // FIXME test this!
     // if load order is B 0 LL LH RL RH then build the numbers
       *speed[0] = spd[1] | spd[2] << 8; // speed left
       *speed[1] = spd[3] | spd[4] << 8; // speed right
-      printf("read_motors_speed reading l_spd: %d, r_spd: %d\r\n", speed[0], speed[1]); 
+      log_msg(DEBUG, "read_motors_speed reading l_spd: %d, r_spd: %d\r\n", speed[0], speed[1]); 
       
 }
 
@@ -139,8 +129,20 @@ int set_motors_speed(int fd, uint16_t left, uint16_t right) {
     
     BYTE data[] = { 0, left_low, left_high, right_low, right_high };
     
-    printf("set_motors_speed writing ll: %d, lh: %d, rl: %d, rh: %d\r\n", left_low, left_high, right_low, right_high); 
+    log_msg(DEBUG, "set_motors_speed writing ll: %d, lh: %d, rl: %d, rh: %d\r\n", left_low, left_high, right_low, right_high); 
     return write(fd, data, 5);
 }
 
+
+PI_THREAD (ramp_thread)
+{
+    start_ramping();
+}
+
+void run_ramp()
+{
+    int x = piThreadCreate(ramp_thread);
+    if (x != 0)
+        log_msg(ERROR, "Ramp didn't start");
+}
 

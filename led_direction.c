@@ -40,19 +40,19 @@ short led_dir(){
     }*/
     for(int i=0;i<4;++i)
     {
-        if((pole_barva[i] != 0) && (pole_barva[i] != 1)) {
-            printf("pole_barva[%d] = %d (received wrong value within interval <-1;1>_! return value 4\n", i, pole_barva[i]);
+        if((sensor_color[i] != 0) && (sensor_color[i] != 1)) {
+            log_msg(DEBUG, "pole_barva[%d] = %d (received wrong value within interval <-1;1>_! return value 4\n", i, sensor_color[i]);
             return 4;
         }
     }
     
-    if((pole_barva[0] == 0)&&(pole_barva[1] == 1)&&(pole_barva[2] == 0)&&(pole_barva[3] == 1))
+    if((sensor_color[0] == 0)&&(sensor_color[1] == 1)&&(sensor_color[2] == 0)&&(sensor_color[3] == 1))
         return 0; //forward
-    else if((pole_barva[0] == 1)&&(pole_barva[1] == 0)&&(pole_barva[2] == 0)&&(pole_barva[3] == 1))
+    else if((sensor_color[0] == 1)&&(sensor_color[1] == 0)&&(sensor_color[2] == 0)&&(sensor_color[3] == 1))
         return -1;  //left
-    else if((pole_barva[0] == 0)&&(pole_barva[1] == 0)&&(pole_barva[2] == 1)&&(pole_barva[3] == 1))
+    else if((sensor_color[0] == 0)&&(sensor_color[1] == 0)&&(sensor_color[2] == 1)&&(sensor_color[3] == 1))
         return 1;       //right
-    else if((pole_barva[0] == 0)&&(pole_barva[1] == 0)&&(pole_barva[2] == 0)&&(pole_barva[3] == 1))
+    else if((sensor_color[0] == 0)&&(sensor_color[1] == 0)&&(sensor_color[2] == 0)&&(sensor_color[3] == 1))
         return 2;   //slow down
     else 
         return 3;   //don't move

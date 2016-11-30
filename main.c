@@ -3,10 +3,17 @@
  * Author: student
  *
  * Created on 26. října 2016, 10:57
+ * 
+ * HOWTO wire it up ..
+ * 
+ * SDA.1 = orange wire
+ * SCL.1 = green wire
+ * 
  */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 #include "logging.h"
 //#include "communication.h"
@@ -20,41 +27,44 @@
 #include "i2c.h"
 #include "km2.h"
 
+#define MAIN_LOOP_USLEEP 1e5
+#define DRIVER_LOOP_USLEEP 1e4
 
-PI_THREAD (ridic) {
-    rid_to();
-}
 
-void rid_to() {
+void start_driving() {
     
     while(1) {
-        //memcpy(led_statuses, pole_barva, 4*sizeof(int));
+        
         short kam_jet = led_dir();
     
-        usleep(500000);
+        usleep(DRIVER_LOOP_USLEEP);
     }
 }
 
-void zacni_ridit() {
-    auto x = piThreadCreate(ridic);
+PI_THREAD (driver) {
+    start_driving();
+}
+
+void run_driver() {
+    int x = piThreadCreate(driver);
     if (x != 0)
-        printf ("ridic didn't start\n");
+        log_msg(ERROR, "Driver didn't start");
 }
 
 /*
  * 
  */
 int main(int argc, char** argv) {
-    int r=1;
     
-    log_msg(INFO,"APP IS STARTING %d",r);
+    log_msg(INFO,"APP IS STARTING");
     
-    spust_dataRead();
-    zacni_ridit();
+    run_dataRead();
+    run_driver();
+    run_ramp();
     
     while(1)
     {
-        usleep(1000);
+        usleep(MAIN_LOOP_USLEEP);
     }
     
     /*

@@ -58,7 +58,7 @@
       <compileType>
         <cTool>
           <standard>3</standard>
-          <commandLine>-lwiringPi</commandLine>
+          <commandLine>-lwiringPi -Wno-implicit-function-declaration</commandLine>
         </cTool>
       </compileType>
       <item path="ad799x.h" ex="false" tool="3" flavor2="0">

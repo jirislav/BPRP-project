@@ -18,12 +18,21 @@
 extern "C" {
 #endif
 
-void spust_dataRead();
-int whatColor();
+void run_dataRead();
+int detectWhiteBlack();
 
 char* detect_color(int color);
 
-extern int pole_barva[4];
+extern int sensor_color[4];
+
+
+// This is optimalized, it shouldn't be changed unless we change hardware
+#define SENSOR_READ_SLEEP 1e3
+
+// Lock number to respect
+#define DATA_READ_LOCK_NO 1
+
+#define DATA_READ_LOOP_USLEEP 1e4
 
 #ifdef __cplusplus
 }

@@ -44,7 +44,7 @@ OBJECTFILES= \
 
 
 # C Compiler Flags
-CFLAGS=-lwiringPi
+CFLAGS=-lwiringPi -Wno-implicit-function-declaration
 
 # CC Compiler Flags
 CCFLAGS=
