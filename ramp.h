@@ -32,6 +32,8 @@ extern "C" {
 // Lock number to respect
 #define RAMP_LOCK_NO 2
     
+#define RAMP_VERBOSE_LOGGING_ENABLED 0
+    
 // 
 #define RAMP_STEP_SIZE 1
 

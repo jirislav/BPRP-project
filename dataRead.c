@@ -65,10 +65,14 @@ int detectWhiteBlack(int bus, int16_t* value, int16_t* value1, int16_t* value2, 
     log_msg(DEBUG, "3: 0x%04x => %d => %d => \t%s", (*value3 & AD799X_RESULT_CHAN) >> 12, pole[3], sensor_color[3], detect_color(sensor_color[3]));
     */
     
-    log_msg(DEBUG, "col_sen_0:%d=%s", pole[0], detect_color(sensor_color[0]));
-    log_msg(DEBUG, "col_sen_1:%d=%s", pole[1], detect_color(sensor_color[1]));
-    log_msg(DEBUG, "col_sen_2:%d=%s", pole[2], detect_color(sensor_color[2]));
-    log_msg(DEBUG, "col_sen_3:%d=%s", pole[3], detect_color(sensor_color[3]));
+    if (DATA_READ_VERBOSE_LOGGING_ENABLED) {
+        log_msg(DEBUG, "col_sen_0:%d=%s", pole[0], detect_color(sensor_color[0]));
+        log_msg(DEBUG, "col_sen_1:%d=%s", pole[1], detect_color(sensor_color[1]));
+        log_msg(DEBUG, "col_sen_2:%d=%s", pole[2], detect_color(sensor_color[2]));
+        log_msg(DEBUG, "col_sen_3:%d=%s", pole[3], detect_color(sensor_color[3]));
+    } else {
+        log_msg(DEBUG, "col_sens_0-3:%s,%s,%s,%s", detect_color(sensor_color[0]), detect_color(sensor_color[1]), detect_color(sensor_color[2]), detect_color(sensor_color[3]));
+    }
 
 }
 

@@ -29,6 +29,8 @@ char* detect_color(int color);
 
 extern int sensor_color[4];
 
+#define DATA_READ_VERBOSE_LOGGING_ENABLED 0
+
 
 // This is optimalized, it shouldn't be changed unless we change hardware
 #define SENSOR_READ_SLEEP 1e3

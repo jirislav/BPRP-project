@@ -34,14 +34,14 @@ short led_dir(){
     piLock(LED_DIRECTION_LOCK_NO);
     
     if((sizeof(sensor_color)/sizeof(*sensor_color)) != 4) {
-        log_msg(ERROR, "pole_barva received wrong number of elements! return value 4");
+        log_msg(ERROR, "sensor_color received wrong number of elements! return value 4");
         return 4;
     }
     
     for(int i=0;i<4;++i)
     {
         if((sensor_color[i] != 0) && (sensor_color[i] != 1)) {
-            log_msg(ERROR, "pole_barva[%d] = %d (received wrong value within interval <-1;1>_! return value 4", i, sensor_color[i]);
+            log_msg(ERROR, "sensor_color[%d] = %d (received wrong value within interval <-1;1>_! return value 4", i, sensor_color[i]);
             return 4;
         }
     }

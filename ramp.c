@@ -132,7 +132,9 @@ int set_motors_speed(int fd, uint16_t left, uint16_t right) {
     
     BYTE data[] = { 0, left_low, left_high, right_low, right_high };
     
-    log_msg(DEBUG, "w_mot_sp ll:%d lh:%d rl:%d rh:%d", left_low, left_high, right_low, right_high); 
+    if (RAMP_VERBOSE_LOGGING_ENABLED)
+        log_msg(DEBUG, "w_mot_sp ll:%d lh:%d rl:%d rh:%d", left_low, left_high, right_low, right_high); 
+    
     return write(fd, data, 5);
 }
 
