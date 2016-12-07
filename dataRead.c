@@ -4,10 +4,11 @@
  * and open the template in the editor.
  */
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 #include <wiringPi.h>
 #include <time.h>
+
+#include "sleeper.h"
 
 #include "ad799x.h"
 #include "i2c.h"
@@ -15,6 +16,8 @@
 
 #include "logging.h"
 #include "dataRead.h"
+#include "sleeper.h"
+
 
 int pole[4] = {0, 0, 0, 0};
 
@@ -28,13 +31,14 @@ int detectWhiteBlack(int bus, int16_t* value, int16_t* value1, int16_t* value2, 
      */
     i2c_read_beint16(bus, ADDR_AD799X_0_F, AD799X_RESULT_CH(0), value);
 
-    usleep(SENSOR_READ_SLEEP);
+    
+    sleep_micro(SENSOR_READ_SLEEP);
     i2c_read_beint16(bus, ADDR_AD799X_0_F, AD799X_RESULT_CH(2), value1);
 
-    usleep(SENSOR_READ_SLEEP);
+    sleep_micro(SENSOR_READ_SLEEP);
     i2c_read_beint16(bus, ADDR_AD799X_0_F, AD799X_RESULT_CH(4), value2);
 
-    usleep(SENSOR_READ_SLEEP);
+    sleep_micro(SENSOR_READ_SLEEP);
     i2c_read_beint16(bus, ADDR_AD799X_0_F, AD799X_RESULT_CH(6), value3);
 
     // Cut the values read from the sensor
@@ -86,16 +90,21 @@ char* detect_color(int color) {
 
 PI_THREAD(ReadData) {
     int bus = i2c_init(1);
+    
+    //wiringPiSetupSys();
 
     int16_t value;
     int16_t value1;
     int16_t value2;
     int16_t value3;
-
+    
     while (1) {
 
+            
         detectWhiteBlack(bus, &value, &value1, &value2, &value3);
-        nanosleep(DATA_READ_LOOP_NANO_SLEEP);
+        
+        sleep_micro(DATA_READ_LOOP_MICRO_SLEEP);
+        
     }
 
     // uzavreni i2c

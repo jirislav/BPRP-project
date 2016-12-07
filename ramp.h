@@ -27,7 +27,7 @@ extern "C" {
 #define RAMP_I2C_ADDRESS 0x70
 
 // Delay for 50 ms (5e7)
-#define RAMP_LOOP_NANO_SLEEP 5e7
+#define RAMP_LOOP_MICRO_SLEEP 5e4
     
 // Lock number to respect
 #define RAMP_LOCK_NO 2
@@ -40,6 +40,7 @@ void read_motors_speed(int fd, uint16_t *speed);
 
 void run_ramp(); // spusti thread
 
+extern int L_speed, R_speed;
 #ifdef __cplusplus
 }
 #endif

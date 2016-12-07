@@ -40,7 +40,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/led_direction.o \
 	${OBJECTDIR}/logging.o \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/ramp.o
+	${OBJECTDIR}/ramp.o \
+	${OBJECTDIR}/sleeper.o
 
 
 # C Compiler Flags
@@ -96,6 +97,11 @@ ${OBJECTDIR}/ramp.o: ramp.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} "$@.d"
 	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/ramp.o ramp.c
+
+${OBJECTDIR}/sleeper.o: sleeper.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} "$@.d"
+	$(COMPILE.c) -O2 -MMD -MP -MF "$@.d" -o ${OBJECTDIR}/sleeper.o sleeper.c
 
 # Subprojects
 .build-subprojects:

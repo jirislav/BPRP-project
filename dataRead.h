@@ -13,7 +13,11 @@
 
 #ifndef DATAREAD_H
 #define DATAREAD_H
-
+#if __STDC_VERSION__ >= 199901L
+#define _XOPEN_SOURCE 600
+#else
+#define _XOPEN_SOURCE 500
+#endif /* __STDC_VERSION__ */
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -32,7 +36,7 @@ extern int sensor_color[4];
 // Lock number to respect
 #define DATA_READ_LOCK_NO 1
 
-#define DATA_READ_LOOP_NANO_SLEEP 1e4
+#define DATA_READ_LOOP_MICRO_SLEEP 5e4
 
 #ifdef __cplusplus
 }

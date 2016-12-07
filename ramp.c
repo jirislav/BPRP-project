@@ -25,6 +25,8 @@
 
 #include <time.h>
 
+#include "sleeper.h"
+
 #include "logging.h"
 #include "ramp.h"
 
@@ -56,8 +58,8 @@ void start_ramping()
     {
         piLock(RAMP_LOCK_NO);
         
-        int mutex_L = 0;
-        int mutex_R = 0;
+        int mutex_L = L_speed;
+        int mutex_R = R_speed;
         
         // global variable to read - desired speed
         piUnlock(RAMP_LOCK_NO);
@@ -97,7 +99,7 @@ void start_ramping()
         speed[0] = 0;
         speed[1] = 0;
         
-        nanosleep(RAMP_LOOP_NANO_SLEEP);
+        sleep_micro(RAMP_LOOP_MICRO_SLEEP);
     }
     
     close(fd);
