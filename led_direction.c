@@ -31,7 +31,7 @@
 
 short led_dir(){
 
-    piLock(LED_DIRECTION_LOCK_NO);
+    //piLock(LED_DIRECTION_LOCK_NO);
     
     if((sizeof(sensor_color)/sizeof(*sensor_color)) != 4) {
         log_msg(ERROR, "sensor_color received wrong number of elements! return value 4");
@@ -46,17 +46,18 @@ short led_dir(){
         }
     }
     
-    if((sensor_color[0] == 0)&&(sensor_color[1] == 1)&&(sensor_color[2] == 0)&&(sensor_color[3] == 1))
+    log_msg(DEBUG, "led_dir_col_sens_0-3:%d,%d,%d,%d", sensor_color[0], sensor_color[1], sensor_color[2], sensor_color[3]);
+    if((sensor_color[0] == WHITE)&&(sensor_color[1] == BLACK)&&(sensor_color[2] == WHITE))
         return 0; //forward
-    else if((sensor_color[0] == 1)&&(sensor_color[1] == 0)&&(sensor_color[2] == 0)&&(sensor_color[3] == 1))
+    else if((sensor_color[0] == BLACK)&&(sensor_color[1] == WHITE)&&(sensor_color[2] == WHITE)&&(sensor_color[3] == BLACK))
         return -1;  //left
-    else if((sensor_color[0] == 0)&&(sensor_color[1] == 0)&&(sensor_color[2] == 1)&&(sensor_color[3] == 1))
+    else if((sensor_color[0] == WHITE)&&(sensor_color[1] == WHITE)&&(sensor_color[2] == BLACK)&&(sensor_color[3] == BLACK))
         return 1;       //right
-    else if((sensor_color[0] == 0)&&(sensor_color[1] == 0)&&(sensor_color[2] == 0)&&(sensor_color[3] == 1))
+    else if((sensor_color[0] == WHITE)&&(sensor_color[1] == WHITE)&&(sensor_color[2] == WHITE)&&(sensor_color[3] == BLACK))
         return 2;   //slow down
     else 
         return 3;   //don't move
     
-    piUnlock(LED_DIRECTION_LOCK_NO);   
+    //piUnlock(LED_DIRECTION_LOCK_NO);   
 
 }

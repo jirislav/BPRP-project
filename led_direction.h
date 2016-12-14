@@ -21,6 +21,9 @@ extern "C" {
 
 short led_dir();
 
+#define BLACK 0
+#define WHITE 1
+
 #define LED_DIRECTION_LOCK_NO 3
 
 

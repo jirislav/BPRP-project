@@ -13,8 +13,10 @@
 
 #define MAIN_LOOP_MICRO_SLEEP 1e6
 
-#define DATA_READ_LOOP_MICRO_SLEEP 5e4
-#define DRIVER_LOOP_MICRO_SLEEP 5e4
+#define DATA_READ_LOOP_MICRO_SLEEP 5e5
+#define DRIVER_LOOP_MICRO_SLEEP 5e5
+
+#define DRIVER_LOCK_NO 0
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -36,41 +38,55 @@
 int L_speed,R_speed;
 
 void start_driving() {
+  
+    int maxspeed = MAX_SPEED;
+    int mediumspeed = MAX_SPEED/2; 
+    int stopspeed = 0;
     
     while(1) {
         
+        piLock(DRIVER_LOCK_NO);
         short direction = led_dir();
       
         // Write to the ramp   
-        piLock(RAMP_LOCK_NO);
         switch(direction)
         {
                 case 0:
-                    L_speed = 10;
-                    R_speed = 10;
+                    L_speed = maxspeed;
+                    R_speed = maxspeed;
+                    break;
                 case 1:
-                    L_speed = 10;
-                    R_speed = 5;
+                    L_speed = maxspeed;
+                    R_speed = mediumspeed;
+                    break;
                 case -1:
-                    L_speed = 5;
-                    R_speed = 10;
+                    L_speed = mediumspeed;
+                    R_speed = maxspeed;
+                    break;
                 case 2:
-                    L_speed = 5;
-                    R_speed = 5;
+                    L_speed = mediumspeed;
+                    R_speed = mediumspeed;
+                    break;
                 case 3:
-                    L_speed = 0;
-                    R_speed = 0;
+                    L_speed = stopspeed;
+                    R_speed = stopspeed;
+                    break;
             default:
-                log_msg(ERROR, "direction = %d, out of bounds, yo", direction);
+                log_msg(ERROR, "driver got direction %d (out of bounds)", direction);
         }    
-        piUnlock(RAMP_LOCK_NO);
+        piUnlock(DRIVER_LOCK_NO);
       
+        log_msg(DEBUG, "driver_says: l:%d r:%d dir:%d", L_speed, R_speed, direction);
+        
+        
         sleep_micro(DRIVER_LOOP_MICRO_SLEEP);
     }
 }
 
 PI_THREAD (driver) {
+    log_msg(DEBUG, "driver starting...");
     start_driving();
+    
 }
 
 void run_driver() {

@@ -38,7 +38,7 @@ extern int sensor_color[4];
 // Lock number to respect
 #define DATA_READ_LOCK_NO 1
 
-#define DATA_READ_LOOP_MICRO_SLEEP 5e4
+#define DATA_READ_LOOP_MICRO_SLEEP 5e5
 
 #ifdef __cplusplus
 }

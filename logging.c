@@ -24,7 +24,7 @@ int log_msg(int level, const char* fmt, ...) {
 
     gettimeofday(&tp, NULL);
 
-    printf("%s:%lu.%.6lu:%s\n", level_type[level], (unsigned long)(tp.tv_sec), (unsigned long)(tp.tv_usec), buffer);
+    printf("%s:%lu.%.6lu:%s\r\n", level_type[level], (unsigned long)(tp.tv_sec), (unsigned long)(tp.tv_usec), buffer);
     fflush(stdout);
 
 }

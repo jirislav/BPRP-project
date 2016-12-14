@@ -123,6 +123,11 @@ void read_motors_speed(int fd, uint16_t *speed)
 }
 
 int set_motors_speed(int fd, uint16_t left, uint16_t right) {
+    if (left > MAX_SPEED)
+        left = MAX_SPEED;
+    
+    if (right > MAX_SPEED)
+        right = MAX_SPEED;
     
     BYTE left_low = left & 0xff;
     BYTE left_high = left >> 8;
@@ -134,6 +139,8 @@ int set_motors_speed(int fd, uint16_t left, uint16_t right) {
     
     if (RAMP_VERBOSE_LOGGING_ENABLED)
         log_msg(DEBUG, "w_mot_sp ll:%d lh:%d rl:%d rh:%d", left_low, left_high, right_low, right_high); 
+    else
+        log_msg(DEBUG, "w_mot_sp l:%d r:%d", left, right); 
     
     return write(fd, data, 5);
 }
@@ -141,11 +148,16 @@ int set_motors_speed(int fd, uint16_t left, uint16_t right) {
 
 PI_THREAD (ramp_thread)
 {
+    //if  (piHiPri (99) != 0 )
+    //        log_msg(ERROR, "Ramp priority setting failed") ;
     start_ramping();
 }
 
 void run_ramp()
 {
+    
+
+    
     int x = piThreadCreate(ramp_thread);
     if (x != 0)
         log_msg(ERROR, "Ramp didn't start");
