@@ -29,7 +29,7 @@ char* detect_color(int color);
 
 extern int sensor_color[4];
 
-#define DATA_READ_VERBOSE_LOGGING_ENABLED 1
+#define DATA_READ_VERBOSE_LOGGING_ENABLED 0
 
 /*
 D:1482403372.399470:col_sen_0:700=Black

@@ -40,7 +40,7 @@ int L_speed,R_speed;
 void start_driving() {
   
     int maxspeed = MAX_SPEED;
-    int mediumspeed = MAX_SPEED/2; 
+    int mediumspeed = MAX_SPEED/2;
     int stopspeed = 0;
     
     int L_speed_memory = 0;
@@ -63,14 +63,14 @@ void start_driving() {
                     break;
                 case RIGHT:
                     L_speed = maxspeed * 2;
-                    R_speed = mediumspeed;
+                    R_speed = mediumspeed / 4;
                     
                     L_speed_memory = L_speed;
                     R_speed_memory = R_speed;
                     
                     break;
                 case LEFT:
-                    L_speed = mediumspeed;
+                    L_speed = mediumspeed / 4;
                     R_speed = maxspeed * 2;
                     
                     L_speed_memory = L_speed;

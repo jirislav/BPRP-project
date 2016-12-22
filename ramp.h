@@ -28,7 +28,7 @@ extern "C" {
 
 #define RAMP_LOOP_MICRO_SLEEP 6e3
     
-#define MAX_SPEED 300
+#define MAX_SPEED 100
     
 // Lock number to respect
 #define RAMP_LOCK_NO 2
