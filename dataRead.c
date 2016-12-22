@@ -14,14 +14,15 @@
 #include "i2c.h"
 #include "km2.h"
 
+#include "led_direction.h"
 #include "logging.h"
 #include "dataRead.h"
 #include "sleeper.h"
 
 
-int pole[4] = {0, 0, 0, 0};
+int pole[4] = {BLACK, BLACK, BLACK, BLACK};
 
-int sensor_color[4] = {1, 0, 0, 1};
+int sensor_color[4] = {WHITE, BLACK, BLACK, WHITE};
 
 int detectWhiteBlack(int bus, int16_t* value, int16_t* value1, int16_t* value2, int16_t* value3) {
 
@@ -50,12 +51,12 @@ int detectWhiteBlack(int bus, int16_t* value, int16_t* value1, int16_t* value2, 
     // Write the black & white detection
     piLock(DATA_READ_LOCK_NO);
     for (int i = 0; i < 4; ++i) {
-        if (pole[i] > 1000)
-            sensor_color[i] = 1;
-        else if (pole[i] > 0 && pole[i] < 800)
-            sensor_color[i] = 0;
+        if (pole[i] > ERROR_COLOR_TOP)
+            sensor_color[i] = WHITE;
+        else if (pole[i] > 0 && pole[i] < ERROR_COLOR_BOTTOM)
+            sensor_color[i] = BLACK;
         else
-            sensor_color[i] = 2;
+            sensor_color[i] = ERROR_COLOR;
     }
     piUnlock(DATA_READ_LOCK_NO);
     /*
@@ -66,25 +67,26 @@ int detectWhiteBlack(int bus, int16_t* value, int16_t* value1, int16_t* value2, 
     */
     
     if (DATA_READ_VERBOSE_LOGGING_ENABLED) {
+        
         log_msg(DEBUG, "col_sen_0:%d=%s", pole[0], detect_color(sensor_color[0]));
         log_msg(DEBUG, "col_sen_1:%d=%s", pole[1], detect_color(sensor_color[1]));
         log_msg(DEBUG, "col_sen_2:%d=%s", pole[2], detect_color(sensor_color[2]));
         log_msg(DEBUG, "col_sen_3:%d=%s", pole[3], detect_color(sensor_color[3]));
-    } else {
-        log_msg(DEBUG, "col_sens_0-3:%s,%s,%s,%s", detect_color(sensor_color[0]), detect_color(sensor_color[1]), detect_color(sensor_color[2]), detect_color(sensor_color[3]));
     }
+    log_msg(DEBUG, "col_sens_0-3:%s,%s,%s,%s", detect_color(sensor_color[0]), detect_color(sensor_color[1]), detect_color(sensor_color[2]), detect_color(sensor_color[3]));
+    
 
 }
 
 char* detect_color(int color) {
     switch (color) {
-        case 0:
+        case BLACK:
             return "Black";
             break;
-        case 1:
+        case WHITE:
             return "White";
             break;
-        case 2:
+        case ERROR_COLOR:
             return "Error";
             break;
     }

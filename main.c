@@ -13,8 +13,8 @@
 
 #define MAIN_LOOP_MICRO_SLEEP 1e6
 
-#define DATA_READ_LOOP_MICRO_SLEEP 5e5
-#define DRIVER_LOOP_MICRO_SLEEP 5e5
+#define DATA_READ_LOOP_MICRO_SLEEP 6e3
+#define DRIVER_LOOP_MICRO_SLEEP 6e3
 
 #define DRIVER_LOCK_NO 0
 
@@ -43,6 +43,8 @@ void start_driving() {
     int mediumspeed = MAX_SPEED/2; 
     int stopspeed = 0;
     
+    int L_speed_memory = 0;
+    int R_speed_memory = 0;
     while(1) {
         
         piLock(DRIVER_LOCK_NO);
@@ -51,28 +53,40 @@ void start_driving() {
         // Write to the ramp   
         switch(direction)
         {
-                case 0:
+                case FORWARD:
                     L_speed = maxspeed;
                     R_speed = maxspeed;
+                    
+                    L_speed_memory = L_speed;
+                    R_speed_memory = R_speed;
+                    
                     break;
-                case 1:
-                    L_speed = maxspeed;
+                case RIGHT:
+                    L_speed = maxspeed * 2;
                     R_speed = mediumspeed;
+                    
+                    L_speed_memory = L_speed;
+                    R_speed_memory = R_speed;
+                    
                     break;
-                case -1:
+                case LEFT:
                     L_speed = mediumspeed;
-                    R_speed = maxspeed;
+                    R_speed = maxspeed * 2;
+                    
+                    L_speed_memory = L_speed;
+                    R_speed_memory = R_speed;
+                    
                     break;
-                case 2:
-                    L_speed = mediumspeed;
-                    R_speed = mediumspeed;
-                    break;
-                case 3:
-                    L_speed = stopspeed;
-                    R_speed = stopspeed;
+                case SLOW_DOWN:
+                    L_speed = .5 * L_speed_memory;
+                    R_speed = .5 * R_speed_memory;
+                    
                     break;
             default:
-                log_msg(ERROR, "driver got direction %d (out of bounds)", direction);
+                    L_speed = L_speed_memory;
+                    R_speed = R_speed_memory;
+                    break;
+                //log_msg(ERROR, "driver got direction %d (continuing with those speeds: %d, %d)", direction, L_speed_memory, R_speed_memory);
         }    
         piUnlock(DRIVER_LOCK_NO);
       

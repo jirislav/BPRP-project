@@ -23,6 +23,13 @@ short led_dir();
 
 #define BLACK 0
 #define WHITE 1
+#define ERROR_COLOR 2
+
+#define FORWARD 0
+#define LEFT -1
+#define RIGHT 1
+#define SLOW_DOWN 2
+#define MOVE_DECISION_ERROR 3
 
 #define LED_DIRECTION_LOCK_NO 3
 

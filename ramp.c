@@ -118,11 +118,23 @@ void read_motors_speed(int fd, uint16_t *speed)
     // if load order is B 0 LL LH RL RH then build the numbers
       speed[0] = spd[1] | spd[2] << 8; // speed left
       speed[1] = spd[3] | spd[4] << 8; // speed right
-      log_msg(DEBUG, "r_mot_sp l:%d r:%d", speed[0], speed[1]); 
+      if (RAMP_LOGGING)
+        log_msg(DEBUG, "r_mot_sp l:%d r:%d", speed[0], speed[1]); 
       
 }
 
 int set_motors_speed(int fd, uint16_t left, uint16_t right) {
+    
+    int reverse_l = left < 0;
+    int reverse_r = right < 0;
+    
+    if (reverse_l) {
+        left = -left;
+    }
+    if (reverse_r) {
+        right = -right;
+    }
+        
     if (left > MAX_SPEED)
         left = MAX_SPEED;
     
@@ -135,8 +147,23 @@ int set_motors_speed(int fd, uint16_t left, uint16_t right) {
     BYTE right_low = right & 0xff;
     BYTE right_high = right >> 8;
     
+    if (reverse_l) {
+        if (left_low)
+            left_low = 256 - left_low;
+        if (left_high)
+            left_high = 256 - left_high;            
+    }
+    
+    if (reverse_r) {
+        if (right_low)
+            right_low = 256 - right_low;
+        if (right_high)
+            right_high = 256 - right_high;            
+    }
+    
     BYTE data[] = { 0, left_low, left_high, right_low, right_high };
     
+    if (RAMP_LOGGING)
     if (RAMP_VERBOSE_LOGGING_ENABLED)
         log_msg(DEBUG, "w_mot_sp ll:%d lh:%d rl:%d rh:%d", left_low, left_high, right_low, right_high); 
     else

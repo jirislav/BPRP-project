@@ -26,7 +26,7 @@
  *                                4
  * 
  *  return values:
- * -1=left; 0=forward; 1=right; 2=slow down; 3=dont move;4=error
+ * -1=left; 0=forward; 1=right; 2=slow down; 3=continue moving, 4=dont move;5=error
  */
 
 short led_dir(){
@@ -35,28 +35,28 @@ short led_dir(){
     
     if((sizeof(sensor_color)/sizeof(*sensor_color)) != 4) {
         log_msg(ERROR, "sensor_color received wrong number of elements! return value 4");
-        return 4;
+        return MOVE_DECISION_ERROR;
     }
     
     for(int i=0;i<4;++i)
     {
-        if((sensor_color[i] != 0) && (sensor_color[i] != 1)) {
-            log_msg(ERROR, "sensor_color[%d] = %d (received wrong value within interval <-1;1>_! return value 4", i, sensor_color[i]);
-            return 4;
+        if(sensor_color[i] == ERROR_COLOR) {
+            log_msg(ERROR, "sensor_color[%d] == ERROR_COLOR !! Cannot go anywhere", i, sensor_color[i]);
+            return MOVE_DECISION_ERROR;
         }
     }
     
-    log_msg(DEBUG, "led_dir_col_sens_0-3:%d,%d,%d,%d", sensor_color[0], sensor_color[1], sensor_color[2], sensor_color[3]);
+    //log_msg(DEBUG, "led_dir_col_sens_0-3:%d,%d,%d,%d", sensor_color[0], sensor_color[1], sensor_color[2], sensor_color[3]);
     if((sensor_color[0] == WHITE)&&(sensor_color[1] == BLACK)&&(sensor_color[2] == WHITE))
-        return 0; //forward
-    else if((sensor_color[0] == BLACK)&&(sensor_color[1] == WHITE)&&(sensor_color[2] == WHITE)&&(sensor_color[3] == BLACK))
-        return -1;  //left
-    else if((sensor_color[0] == WHITE)&&(sensor_color[1] == WHITE)&&(sensor_color[2] == BLACK)&&(sensor_color[3] == BLACK))
-        return 1;       //right
+        return FORWARD;
+    else if((sensor_color[0] == BLACK)&&(sensor_color[1] == WHITE)&&(sensor_color[2] == WHITE))
+        return LEFT;
+    else if((sensor_color[0] == WHITE)&&(sensor_color[1] == WHITE)&&(sensor_color[2] == BLACK))
+        return RIGHT;
     else if((sensor_color[0] == WHITE)&&(sensor_color[1] == WHITE)&&(sensor_color[2] == WHITE)&&(sensor_color[3] == BLACK))
-        return 2;   //slow down
+        return SLOW_DOWN;
     else 
-        return 3;   //don't move
+        return MOVE_DECISION_ERROR; //error - cant decide
     
     //piUnlock(LED_DIRECTION_LOCK_NO);   
 

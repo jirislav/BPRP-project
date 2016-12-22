@@ -26,16 +26,18 @@ extern "C" {
 // Run "i2cdetect -y 1"
 #define RAMP_I2C_ADDRESS 0x70
 
-#define RAMP_LOOP_MICRO_SLEEP 1e5
+#define RAMP_LOOP_MICRO_SLEEP 6e3
     
-#define MAX_SPEED 100
+#define MAX_SPEED 300
     
 // Lock number to respect
 #define RAMP_LOCK_NO 2
     
 #define RAMP_VERBOSE_LOGGING_ENABLED 0
 
-#define RAMP_STEP_SIZE 5
+#define RAMP_LOGGING 0
+
+#define RAMP_STEP_SIZE 2
 
 int set_motors_speed(int fd, uint16_t left, uint16_t right);
 void read_motors_speed(int fd, uint16_t *speed);
